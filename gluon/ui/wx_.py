@@ -80,56 +80,66 @@ class ObjectBackedPanel(wx.Panel):
 
             is_read_only = True if attribute_name.startswith("_") or attribute_name in read_only else False
 
-            if type(attribute_element) == FloatRange:
+            # if type(attribute_element) == FloatRange:
+            if isinstance(attribute_element, FloatRange):
                 widget = FloatWidget(self,
                                      -1,
                                      backing_object,
                                      attribute_name,
                                      read_only=is_read_only)
-            elif type(attribute_element) == Float:
+            # elif type(attribute_element) == Float:
+            elif isinstance(attribute_element, Float):
                 widget = FloatWidget(self,
                                      -1,
                                      backing_object,
                                      attribute_name,
                                      read_only=is_read_only)
-            elif type(attribute_element) == Int:
+            # elif type(attribute_element) == Int:
+            elif isinstance(attribute_element, Int):
                 widget = IntWidget(self,
                                    -1,
                                    backing_object,
                                    attribute_name,
                                    read_only=is_read_only)
-            elif type(attribute_element) == Bool:
+            # elif type(attribute_element) == Bool:
+            elif isinstance(attribute_element, Bool):
                 widget = BoolWidget(self,
                                     -1,
                                     backing_object,
                                     attribute_name,
                                     read_only=is_read_only)
-            elif type(attribute_element) == Str:
+            # elif type(attribute_element) == Str:
+            elif isinstance(attribute_element, Str):
                 widget = StrWidget(self,
                                    -1,
                                    backing_object,
                                    attribute_name,
                                    read_only=is_read_only)
-            elif type(attribute_element) == Enum:
+            # elif type(attribute_element) == Enum:
+            elif isinstance(attribute_element, Enum):
                 widget = EnumWidget(self,
                                     -1,
                                     backing_object,
                                     attribute_name,
                                     read_only=is_read_only)
-            elif type(attribute_element) == Tuple:
+            # elif type(attribute_element) == Tuple:
+            elif isinstance(attribute_element, Tuple):
                 widget = InstanceWidget(self,
                                         -1,
                                         backing_object,
                                         attribute_name,
                                         read_only=is_read_only)
-            elif type(attribute_element) == List:
+            # elif type(attribute_element) == List:
+            elif isinstance(attribute_element, List):
                 widget = InstanceWidget(self,
                                         -1,
                                         backing_object,
                                         attribute_name,
                                         read_only=is_read_only)
-            elif type(attribute_element) == Typed or type(attribute_element) == Instance or \
-                type(attribute_element) == Value:
+            # elif type(attribute_element) == Typed or \
+            #      type(attribute_element) == Instance or \
+            #      type(attribute_element) == Value:
+            elif isinstance(attribute_element, (Typed, Instance, Value,)):
                 if isinstance(getattr(backing_object, attribute_name), Atom):
                     if hasattr(attribute_element, "read_only"):
                         ro = attribute_element.read_only

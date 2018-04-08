@@ -19,7 +19,7 @@ class EnumWidget(wx.ComboBox):
     Parameters
     ----------
     parent : wx panel
-    id : int
+    id_ : int
     backing_object : an Atom object
     attribute_name : str
     read_only : bool
@@ -27,17 +27,19 @@ class EnumWidget(wx.ComboBox):
     """
     def __init__(self,
                  parent,
-                 id,
+                 id_,
                  backing_object=None,
                  attribute_name=None,
                  read_only=False):
         self.attribute_element = backing_object.__class__.__dict__["__atom_members__"][attribute_name]
-        assert isinstance(self.attribute_element, Enum)
+        # assert isinstance(self.attribute_element, Enum)
+        if not isinstance(self.attribute_element, Enum):
+            raise AssertionError("attribute_element should be an Enum")
         self.backing_object = backing_object
         self.attribute_name = attribute_name
         wx.ComboBox.__init__(self,
                              parent,
-                             id,
+                             id_,
                              choices=self.attribute_element.items,
                              style=wx.CB_READONLY)
 
@@ -94,7 +96,7 @@ class InstanceWidget(wx.TextCtrl):
     Parameters
     ----------
     parent : wx panel
-    id : int
+    id_ : int
     backing_object : an Atom object
     attribute_name : str
     read_only : bool
@@ -102,7 +104,7 @@ class InstanceWidget(wx.TextCtrl):
     """
     def __init__(self,
                  parent,
-                 id,
+                 id_,
                  backing_object=None,
                  attribute_name=None,
                  read_only=False):
@@ -111,7 +113,7 @@ class InstanceWidget(wx.TextCtrl):
         # assert isinstance(attribute_element, Value)
         self.backing_object = backing_object
         self.attribute_name = attribute_name
-        wx.TextCtrl.__init__(self, parent, id, size=(500, -1))
+        wx.TextCtrl.__init__(self, parent, id_, size=(500, -1))
 
         self.SetValue(str(getattr(backing_object, attribute_name)))
 
@@ -151,7 +153,9 @@ class InstanceWidget(wx.TextCtrl):
         print("InstanceWidget : backed_object_attr_value_changed")
         print("InstanceWidget : backed_object_attr_value_change : %s" % str(change))
         print("InstanceWidget : %s" % str(self))
-        assert isinstance(change["value"], object)
+        # assert isinstance(change["value"], object)
+        # if not isinstance(change["value"], object):
+        #     raise AssertionError('change["value"] should be an object')
         # PyDeadObject error avoidance
         # (python is a proxy to C++ that should not be called if not there)
         if self:
@@ -166,7 +170,7 @@ class ValueWidget(wx.TextCtrl):
     Parameters
     ----------
     parent : wx panel
-    id : int
+    id_ : int
     backing_object : an Atom object
     attribute_name : str
     read_only : bool
@@ -174,7 +178,7 @@ class ValueWidget(wx.TextCtrl):
     """
     def __init__(self,
                  parent,
-                 id,
+                 id_,
                  backing_object=None,
                  attribute_name=None,
                  read_only=False):
@@ -183,7 +187,7 @@ class ValueWidget(wx.TextCtrl):
         # assert isinstance(attribute_element, Value)
         self.backing_object = backing_object
         self.attribute_name = attribute_name
-        wx.TextCtrl.__init__(self, parent, id, size=(500, -1))
+        wx.TextCtrl.__init__(self, parent, id_, size=(500, -1))
 
         self.SetValue(str(getattr(backing_object, attribute_name)))
 
@@ -224,7 +228,9 @@ class ValueWidget(wx.TextCtrl):
         print("ValueWidget : backed_object_attr_value_change : %s" %
               str(change))
         print("ValueWidget : %s" % str(self))
-        assert isinstance(change["value"], object)
+        # assert isinstance(change["value"], object)
+        # if not isinstance(change["value"], object):
+        #     raise AssertionError('change["value"] should be an object')
         # PyDeadObject error avoidance
         # (python is a proxy to C++ that should not be called if not there)
         if self:
@@ -239,7 +245,7 @@ class StrWidget(wx.TextCtrl):
     Parameters
     ----------
     parent : wx panel
-    id : int
+    id_ : int
     backing_object : an Atom object
     attribute_name : str
     read_only : bool
@@ -247,12 +253,14 @@ class StrWidget(wx.TextCtrl):
     """
     def __init__(self,
                  parent,
-                 id,
+                 id_,
                  backing_object=None,
                  attribute_name=None,
                  read_only=False):
         attribute_element = backing_object.__class__.__dict__["__atom_members__"][attribute_name]
-        assert isinstance(attribute_element, Str)
+        # assert isinstance(attribute_element, Str)
+        if not isinstance(attribute_element, Str):
+            raise AssertionError("attribute_element should be an Str")
         self.backing_object = backing_object
         self.attribute_name = attribute_name
         wx.TextCtrl.__init__(self, parent, -1)
@@ -295,7 +303,9 @@ class StrWidget(wx.TextCtrl):
         print("StrWidget : backed_object_attr_value_changed")
         print("StrWidget : backed_object_attr_value_change : %s" % str(change))
         print("StrWidget : %s" % str(self))
-        assert isinstance(change["value"], str)
+        # assert isinstance(change["value"], str)
+        if not isinstance(change["value"], str):
+            raise AssertionError('change["value"] should be an str')
         # PyDeadObject error avoidance
         # (python is a proxy to C++ that should not be called if not there)
         if self:
@@ -310,7 +320,7 @@ class BoolWidget(wx.CheckBox):
     Parameters
     ----------
     parent : wx panel
-    id : int
+    id_ : int
     backing_object : an Atom object
     attribute_name : str
     read_only : bool
@@ -318,15 +328,17 @@ class BoolWidget(wx.CheckBox):
     """
     def __init__(self,
                  parent,
-                 id,
+                 id_,
                  backing_object=None,
                  attribute_name=None,
                  read_only=False):
         attribute_element = backing_object.__class__.__dict__["__atom_members__"][attribute_name]
-        assert isinstance(attribute_element, Bool)
+        # assert isinstance(attribute_element, Bool)
+        if not isinstance(attribute_element, Bool):
+            raise AssertionError("attribute_element should be a Bool")
         self.backing_object = backing_object
         self.attribute_name = attribute_name
-        wx.CheckBox.__init__(self, parent, id)
+        wx.CheckBox.__init__(self, parent, id_)
 
         if getattr(backing_object, attribute_name) is True:
             self.SetValue(True)
@@ -387,12 +399,12 @@ class IntWidget(FloatSpin):
     Parameters
     ----------
     parent : wx panel
-    id : int
+    id_ : int
     backing_object : subclass of atom.api.Atom
         the atom object being dealt with
     attribute_name : the name of the managed variable in the backing
         object definition.
-        if backing object is defined as 
+        if backing object is defined as
         class BackingObject(Atom): var_1 = FloatRange(),
         the attribute name is var_1
     read_only : bool
@@ -404,19 +416,23 @@ class IntWidget(FloatSpin):
     """
     def __init__(self,
                  parent,
-                 id,
+                 id_,
                  backing_object=None,
                  attribute_name=None,
                  read_only=False):
-        assert isinstance(backing_object, Atom)
+        # assert isinstance(backing_object, Atom)
+        if not isinstance(backing_object, Atom):
+            raise AssertionError("backing_object should be an Atom")
         attribute_element = backing_object.__class__.__dict__["__atom_members__"][attribute_name]
-        assert isinstance(attribute_element, Int)
+        # assert isinstance(attribute_element, Int)
+        if not isinstance(attribute_element, Int):
+            raise AssertionError("attribute_element should be an Int")
         self.backing_object = backing_object
         self.attribute_name = attribute_name
 
         FloatSpin.__init__(self,
                            parent,
-                           id,
+                           id_,
                            increment=1,
                            value=getattr(backing_object, attribute_name),
                            agwStyle=FS_RIGHT)
@@ -514,10 +530,10 @@ class FloatWidget(FloatSpin):
     Parameters
     ----------
     parent : wx panel
-    id : int
+    id_ : int
     backing_object : subclass of atom.api.Atom
         the atom object being dealt with
-    attribute_name : the name of the managed variable in the backing 
+    attribute_name : the name of the managed variable in the backing
         object definition
         if backing object is defined as 
         class BackingObject(Atom): var_1 = FloatRange(),
@@ -530,7 +546,7 @@ class FloatWidget(FloatSpin):
     1) Spin events: events generated by spinning up/down the spinbutton;
     2) Char events: playing with up/down arrows of the keyboard 
     increase/decrease the value of :class:`FloatSpin`;
-    3) Mouse wheel event: 
+    3) Mouse wheel event:
     using the wheel will change the value of :class:`FloatSpin`.
     In addition, there are some other functionalities:
     - It remembers the initial value as a default value,
@@ -548,14 +564,19 @@ class FloatWidget(FloatSpin):
     """
     def __init__(self,
                  parent,
-                 id,
+                 id_,
                  backing_object=None,
                  attribute_name=None,
                  read_only=False):
-        assert isinstance(backing_object, Atom)
+        # assert isinstance(backing_object, Atom)
+        if not isinstance(backing_object, Atom):
+            raise AssertionError("backing object should be an Atom")
         attribute_element = backing_object.__class__.__dict__["__atom_members__"][attribute_name]
-        assert (isinstance(attribute_element, FloatRange) or
-                isinstance(attribute_element, Float))
+        # assert (isinstance(attribute_element, FloatRange) or
+        #         isinstance(attribute_element, Float))
+        if not isinstance(attribute_element, (FloatRange, Float,)):
+            raise AssertionError("attribute_element should be a "
+                                 "Float or a FloatRange")
         self.backing_object = backing_object
         self.attribute_name = attribute_name
         # Increment is dynamically handled in the control,
@@ -570,7 +591,7 @@ class FloatWidget(FloatSpin):
             maximum = None
         FloatSpin.__init__(self,
                            parent,
-                           id,
+                           id_,
                            min_val=minimum,
                            max_val=maximum,
                            increment=self.get_increment(self.get_digits(getattr(backing_object, attribute_name))),
