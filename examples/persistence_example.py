@@ -15,13 +15,13 @@ example_instance.float_range_element_1 = 7.5
 
 print(pickle.dumps(example_instance))
 
-with open("./test.pickle", "w") as f:
+with open("./test.pickle", "wb") as f:
     pickle.dump(example_instance, f)
 
-with open("./test.pickle") as f:
+with open("./test.pickle", "rb") as f:
     obj = pickle.load(f)
 
-app = wx.PySimpleApp()
+app = wx.App()
 frame = wx.Frame(None, -1, title="gluon ui example", size=(300, 400))
 panel = ObjectBackedPanel(frame,
                           obj,

@@ -11,7 +11,7 @@ from objects import Example
 
 example_instance = Example()
 
-app = wx.PySimpleApp()
+app = wx.App()
 frame = wx.Frame(None, -1, title="gluon ui example", size=(300, 500))
 panel = ObjectBackedPanel(frame,
                           example_instance,

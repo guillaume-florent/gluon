@@ -152,7 +152,9 @@ class ObjectBackedPanel(wx.Panel):
                                                label_width=label_width,
                                                read_only=ro)
                 else:
-                    if type(attribute_element) == Typed or type(attribute_element) == Instance:
+                    # if type(attribute_element) == Typed or \
+                    #    type(attribute_element) == Instance:
+                    if isinstance(attribute_element, (Typed, Instance, )):
                         widget = InstanceWidget(self,
                                                 -1,
                                                 backing_object,

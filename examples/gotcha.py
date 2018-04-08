@@ -16,10 +16,10 @@ example_instance_2 = Example()
 example_instance.float_element = 9.
 example_instance.float_range_element_1 = 7.5
 
-print(str(example_instance.value_element_atomic))
-print(str(example_instance_2.value_element_atomic))
-print(str(example_instance.value_element_atomic_2))
-print(str(example_instance_2.value_element_atomic_2))
+print(str(example_instance.typed_element_atomic))
+print(str(example_instance_2.typed_element_atomic))
+print(str(example_instance.typed_element_atomic_2))
+print(str(example_instance_2.typed_element_atomic_2))
 
 # print("-"*20)
 # print(gluon.persistence.atom_string(example_instance))
@@ -27,13 +27,13 @@ print(str(example_instance_2.value_element_atomic_2))
 
 print(pickle.dumps(example_instance))
 
-with open("./test.pickle", "w") as f:
+with open("./test.pickle", "wb") as f:
     pickle.dump(example_instance, f)
 
-with open("./test.pickle") as f:
+with open("./test.pickle", "rb") as f:
     obj = pickle.load(f)
 
-app = wx.PySimpleApp()
+app = wx.App()
 frame = wx.Frame(None, -1, title="gluon ui example", size=(600, 400))
 
 sizer = wx.BoxSizer(wx.HORIZONTAL)

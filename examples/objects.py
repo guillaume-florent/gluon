@@ -41,12 +41,12 @@ class Example(Atom):
     # value_element_atomic = Value(default=DummyButAtomic())
     # value_element_atomic_2 = Value(default=DummyButAtomic())
     typed_element_atomic = Typed(DummyButAtomic,
-                                             args=(),
-                                             kwargs={"a": 1, "b": 2, "c": 3},
-                                             read_only=["c"])
+                                 args=(),
+                                 kwargs={"a": 1, "b": 2, "c": 3},
+                                 read_only=["c"])
     typed_element_atomic_2 = Typed(DummyButAtomic,
-                                               args=(),
-                                               kwargs={"a": 4, "b": 5, "c": 6})
+                                   args=(),
+                                   kwargs={"a": 4, "b": 5, "c": 6})
 
     _value_element_protected = Value(default=Dummy())
 
