@@ -1,7 +1,8 @@
 #!/usr/bin/python
 # coding: utf-8
 
-r"""Elements are Atom Members with the capacity to store metadata when relevant and to remember their creation order
+r"""Elements are Atom Members with the capacity to store metadata
+when relevant and to remember their creation order
 
 """
 

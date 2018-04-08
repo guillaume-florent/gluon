@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # coding: utf-8
 
 r"""__init__.py of the gluon project"""
@@ -18,7 +18,7 @@ from __future__ import unicode_literals
 __name__ = "gluon"
 __description__ = "UI auto generation based on Atom"
 
-__version__ = "0.7.0"
+__version__ = "0.8.0"
 __author__ = "Guillaume Florent"
 __author_email__ = "florentsailing@gmail.com"
 __license__ = 'GPL v3'

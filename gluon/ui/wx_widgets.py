@@ -1,17 +1,16 @@
-#!/usr/bin/python
 # coding: utf-8
 
 r"""wx widgets that can be added to an auto generated container/panel"""
 
 import wx
-import wx.lib.agw.floatspin
-import wx.lib.scrolledpanel
-import wx.lib.agw.foldpanelbar
+from wx.lib.agw.floatspin import FloatSpin, FS_RIGHT, EVT_FLOATSPIN
+# import wx.lib.scrolledpanel
+# import wx.lib.agw.foldpanelbar
 
-import gluon.scalars
-import gluon.enum
+from gluon.scalars import Str, Bool, Int, Float, FloatRange
+from gluon.enum import Enum
 
-import atom.api
+from atom.api import Atom
 
 
 class EnumWidget(wx.ComboBox):
@@ -26,18 +25,28 @@ class EnumWidget(wx.ComboBox):
     read_only : bool
 
     """
-    def __init__(self, parent, id, backing_object=None, attribute_name=None, read_only=False):
+    def __init__(self,
+                 parent,
+                 id,
+                 backing_object=None,
+                 attribute_name=None,
+                 read_only=False):
         self.attribute_element = backing_object.__class__.__dict__["__atom_members__"][attribute_name]
-        assert isinstance(self.attribute_element, gluon.enum.Enum)
+        assert isinstance(self.attribute_element, Enum)
         self.backing_object = backing_object
         self.attribute_name = attribute_name
-        wx.ComboBox.__init__(self, parent, id, choices=self.attribute_element.items, style=wx.CB_READONLY)
+        wx.ComboBox.__init__(self,
+                             parent,
+                             id,
+                             choices=self.attribute_element.items,
+                             style=wx.CB_READONLY)
 
         self.SetValue(getattr(backing_object, attribute_name))
 
         self.Bind(wx.EVT_COMBOBOX, self.on_evt_combobox, self)
 
-        backing_object.observe(attribute_name, self.backed_object_attr_value_changed)
+        backing_object.observe(attribute_name,
+                               self.backed_object_attr_value_changed)
 
         if read_only is True:
             self.Enable(False)
@@ -50,9 +59,13 @@ class EnumWidget(wx.ComboBox):
         event : wx event
 
         """
-        if self:  # PyDeadObject error avoidance (python is a proxy to C++ that should not be called if not there)
+        # PyDeadObject error avoidance
+        # (python is a proxy to C++ that should not be called if not there)
+        if self:
             print(event.GetEventObject().GetValue())
-            setattr(self.backing_object, self.attribute_name, event.GetEventObject().GetValue())
+            setattr(self.backing_object,
+                    self.attribute_name,
+                    event.GetEventObject().GetValue())
             print(getattr(self.backing_object, self.attribute_name))
 
     def backed_object_attr_value_changed(self, change):
@@ -66,7 +79,10 @@ class EnumWidget(wx.ComboBox):
         print("EnumWidget : backed_object_attr_value_changed")
         print("EnumWidget : backed_object_attr_value_change : %s" % str(change))
         print("EnumWidget : %s" % str(self))
-        if self:  # PyDeadObject error avoidance (python is a proxy to C++ that should not be called if not there)
+
+        # PyDeadObject error avoidance
+        # (python is a proxy to C++ that should not be called if not there)
+        if self:
             # self.SetValue(change["value"])
             self.SetValue(getattr(change["object"], change["name"]))
         print(getattr(change["object"], change["name"]))
@@ -84,9 +100,15 @@ class InstanceWidget(wx.TextCtrl):
     read_only : bool
 
     """
-    def __init__(self, parent, id, backing_object=None, attribute_name=None, read_only=False):
-        # attribute_element = backing_object.__class__.__dict__["__atom_members__"][attribute_name]
-        # assert isinstance(attribute_element, gluon.scalars.Value)
+    def __init__(self,
+                 parent,
+                 id,
+                 backing_object=None,
+                 attribute_name=None,
+                 read_only=False):
+        # attribute_element = \
+        #  backing_object.__class__.__dict__["__atom_members__"][attribute_name]
+        # assert isinstance(attribute_element, Value)
         self.backing_object = backing_object
         self.attribute_name = attribute_name
         wx.TextCtrl.__init__(self, parent, id, size=(500, -1))
@@ -96,7 +118,8 @@ class InstanceWidget(wx.TextCtrl):
         # self.Bind(wx.EVT_TEXT, self.on_evt_text, self)
 
         # attribute_element.add_static_observer(self.backed_object_attr_value_changed)
-        backing_object.observe(attribute_name, self.backed_object_attr_value_changed)
+        backing_object.observe(attribute_name,
+                               self.backed_object_attr_value_changed)
 
         if read_only is True:
             self.Enable(False)
@@ -109,8 +132,12 @@ class InstanceWidget(wx.TextCtrl):
     #     event : wx event
     #
     #     """
-    #     if self:  # PyDeadObject error avoidance (python is a proxy to C++ that should not be called if not there)
-    #         setattr(self.backing_object, self.attribute_name, event.GetEventObject().GetValue())
+    #     # PyDeadObject error avoidance
+    #     # (python is a proxy to C++ that should not be called if not there)
+    #     if self:
+    #         setattr(self.backing_object,
+    #                 self.attribute_name,
+    #                 event.GetEventObject().GetValue())
     #         print(getattr(self.backing_object, self.attribute_name))
 
     def backed_object_attr_value_changed(self, change):
@@ -125,7 +152,9 @@ class InstanceWidget(wx.TextCtrl):
         print("InstanceWidget : backed_object_attr_value_change : %s" % str(change))
         print("InstanceWidget : %s" % str(self))
         assert isinstance(change["value"], object)
-        if self:  # PyDeadObject error avoidance (python is a proxy to C++ that should not be called if not there)
+        # PyDeadObject error avoidance
+        # (python is a proxy to C++ that should not be called if not there)
+        if self:
             self.SetValue(str(change["value"]))
             # self.SetValue(str(getattr(change["object"], change["name"])))
         print(getattr(change["object"], change["name"]))
@@ -143,9 +172,15 @@ class ValueWidget(wx.TextCtrl):
     read_only : bool
 
     """
-    def __init__(self, parent, id, backing_object=None, attribute_name=None, read_only=False):
-        # attribute_element = backing_object.__class__.__dict__["__atom_members__"][attribute_name]
-        # assert isinstance(attribute_element, gluon.scalars.Value)
+    def __init__(self,
+                 parent,
+                 id,
+                 backing_object=None,
+                 attribute_name=None,
+                 read_only=False):
+        # attribute_element = \
+        #  backing_object.__class__.__dict__["__atom_members__"][attribute_name]
+        # assert isinstance(attribute_element, Value)
         self.backing_object = backing_object
         self.attribute_name = attribute_name
         wx.TextCtrl.__init__(self, parent, id, size=(500, -1))
@@ -155,7 +190,8 @@ class ValueWidget(wx.TextCtrl):
         self.Bind(wx.EVT_TEXT, self.on_evt_text, self)
 
         # attribute_element.add_static_observer(self.backed_object_attr_value_changed)
-        backing_object.observe(attribute_name, self.backed_object_attr_value_changed)
+        backing_object.observe(attribute_name,
+                               self.backed_object_attr_value_changed)
 
         if read_only is True:
             self.Enable(False)
@@ -168,8 +204,12 @@ class ValueWidget(wx.TextCtrl):
         event : wx event
 
         """
-        if self:  # PyDeadObject error avoidance (python is a proxy to C++ that should not be called if not there)
-            setattr(self.backing_object, self.attribute_name, event.GetEventObject().GetValue())
+        # PyDeadObject error avoidance
+        # (python is a proxy to C++ that should not be called if not there)
+        if self:
+            setattr(self.backing_object,
+                    self.attribute_name,
+                    event.GetEventObject().GetValue())
             print(getattr(self.backing_object, self.attribute_name))
 
     def backed_object_attr_value_changed(self, change):
@@ -181,10 +221,13 @@ class ValueWidget(wx.TextCtrl):
 
         """
         print("ValueWidget : backed_object_attr_value_changed")
-        print("ValueWidget : backed_object_attr_value_change : %s" % str(change))
+        print("ValueWidget : backed_object_attr_value_change : %s" %
+              str(change))
         print("ValueWidget : %s" % str(self))
         assert isinstance(change["value"], object)
-        if self:  # PyDeadObject error avoidance (python is a proxy to C++ that should not be called if not there)
+        # PyDeadObject error avoidance
+        # (python is a proxy to C++ that should not be called if not there)
+        if self:
             self.SetValue(str(change["value"]))
             # self.SetValue(str(getattr(change["object"], change["name"])))
         print(getattr(change["object"], change["name"]))
@@ -202,9 +245,14 @@ class StrWidget(wx.TextCtrl):
     read_only : bool
 
     """
-    def __init__(self, parent, id, backing_object=None, attribute_name=None, read_only=False):
+    def __init__(self,
+                 parent,
+                 id,
+                 backing_object=None,
+                 attribute_name=None,
+                 read_only=False):
         attribute_element = backing_object.__class__.__dict__["__atom_members__"][attribute_name]
-        assert isinstance(attribute_element, gluon.scalars.Str)
+        assert isinstance(attribute_element, Str)
         self.backing_object = backing_object
         self.attribute_name = attribute_name
         wx.TextCtrl.__init__(self, parent, -1)
@@ -214,7 +262,8 @@ class StrWidget(wx.TextCtrl):
         self.Bind(wx.EVT_TEXT, self.on_evt_text, self)
 
         # attribute_element.add_static_observer(self.backed_object_attr_value_changed)
-        backing_object.observe(attribute_name, self.backed_object_attr_value_changed)
+        backing_object.observe(attribute_name,
+                               self.backed_object_attr_value_changed)
 
         if read_only is True:
             self.Enable(False)
@@ -227,8 +276,12 @@ class StrWidget(wx.TextCtrl):
         event : wx event
 
         """
-        if self:  # PyDeadObject error avoidance (python is a proxy to C++ that should not be called if not there)
-            setattr(self.backing_object, self.attribute_name, event.GetEventObject().GetValue())
+        # PyDeadObject error avoidance
+        # (python is a proxy to C++ that should not be called if not there)
+        if self:
+            setattr(self.backing_object,
+                    self.attribute_name,
+                    event.GetEventObject().GetValue())
             print(getattr(self.backing_object, self.attribute_name))
 
     def backed_object_attr_value_changed(self, change):
@@ -243,7 +296,9 @@ class StrWidget(wx.TextCtrl):
         print("StrWidget : backed_object_attr_value_change : %s" % str(change))
         print("StrWidget : %s" % str(self))
         assert isinstance(change["value"], str)
-        if self:  # PyDeadObject error avoidance (python is a proxy to C++ that should not be called if not there)
+        # PyDeadObject error avoidance
+        # (python is a proxy to C++ that should not be called if not there)
+        if self:
             # self.SetValue(change["value"])
             self.SetValue(getattr(change["object"], change["name"]))
         print(getattr(change["object"], change["name"]))
@@ -261,9 +316,14 @@ class BoolWidget(wx.CheckBox):
     read_only : bool
 
     """
-    def __init__(self, parent, id, backing_object=None, attribute_name=None, read_only=False):
+    def __init__(self,
+                 parent,
+                 id,
+                 backing_object=None,
+                 attribute_name=None,
+                 read_only=False):
         attribute_element = backing_object.__class__.__dict__["__atom_members__"][attribute_name]
-        assert isinstance(attribute_element, gluon.scalars.Bool)
+        assert isinstance(attribute_element, Bool)
         self.backing_object = backing_object
         self.attribute_name = attribute_name
         wx.CheckBox.__init__(self, parent, id)
@@ -278,7 +338,8 @@ class BoolWidget(wx.CheckBox):
         self.Bind(wx.EVT_CHECKBOX, self.on_evt_checkbox, self)
 
         # attribute_element.add_static_observer(self.backed_object_attr_value_changed)
-        backing_object.observe(attribute_name, self.backed_object_attr_value_changed)
+        backing_object.observe(attribute_name,
+                               self.backed_object_attr_value_changed)
 
         if read_only is True:
             self.Enable(False)
@@ -291,8 +352,12 @@ class BoolWidget(wx.CheckBox):
         event : wx event
 
         """
-        if self:  # PyDeadObject error avoidance (python is a proxy to C++ that should not be called if not there)
-            setattr(self.backing_object, self.attribute_name, event.GetEventObject().GetValue())
+        # PyDeadObject error avoidance
+        # (python is a proxy to C++ that should not be called if not there)
+        if self:
+            setattr(self.backing_object,
+                    self.attribute_name,
+                    event.GetEventObject().GetValue())
             print(getattr(self.backing_object, self.attribute_name))
 
     def backed_object_attr_value_changed(self, change):
@@ -307,13 +372,16 @@ class BoolWidget(wx.CheckBox):
         print("BoolWidget : backed_object_attr_value_change : %s" % str(change))
         print("BoolWidget : %s" % str(self))
         # assert type(change["value"]) is bool
-        if self:  # PyDeadObject error avoidance (python is a proxy to C++ that should not be called if not there)
+
+        # PyDeadObject error avoidance
+        # (python is a proxy to C++ that should not be called if not there)
+        if self:
             # self.SetValue(change["value"])
             self.SetValue(getattr(change["object"], change["name"]))
         print(getattr(change["object"], change["name"]))
 
 
-class IntWidget(wx.lib.agw.floatspin.FloatSpin):
+class IntWidget(FloatSpin):
     r"""Int widget
 
     Parameters
@@ -322,8 +390,10 @@ class IntWidget(wx.lib.agw.floatspin.FloatSpin):
     id : int
     backing_object : subclass of atom.api.Atom
         the atom object being dealt with
-    attribute_name : the name of the managed variable in the backing object definition
-        if backing object is defined as class BackingObject(Atom): var_1 = parametrics.electron.scalars.FloatRange(),
+    attribute_name : the name of the managed variable in the backing
+        object definition.
+        if backing object is defined as 
+        class BackingObject(Atom): var_1 = FloatRange(),
         the attribute name is var_1
     read_only : bool
 
@@ -332,29 +402,39 @@ class IntWidget(wx.lib.agw.floatspin.FloatSpin):
     see the FloatWidget how to
 
     """
-    def __init__(self, parent, id, backing_object=None, attribute_name=None, read_only=False):
-        assert isinstance(backing_object, atom.api.Atom)
+    def __init__(self,
+                 parent,
+                 id,
+                 backing_object=None,
+                 attribute_name=None,
+                 read_only=False):
+        assert isinstance(backing_object, Atom)
         attribute_element = backing_object.__class__.__dict__["__atom_members__"][attribute_name]
-        assert isinstance(attribute_element, gluon.scalars.Int)
+        assert isinstance(attribute_element, Int)
         self.backing_object = backing_object
         self.attribute_name = attribute_name
 
-        wx.lib.agw.floatspin.FloatSpin.__init__(self, parent, id,
-                                                increment=1,
-                                                value=getattr(backing_object, attribute_name),
-                                                agwStyle=wx.lib.agw.floatspin.FS_RIGHT)
+        FloatSpin.__init__(self,
+                           parent,
+                           id,
+                           increment=1,
+                           value=getattr(backing_object, attribute_name),
+                           agwStyle=FS_RIGHT)
 
         self.SetDigits(0)
         # self.Bind(wx.EVT_TEXT, self.on_evt_floatspin, self)
-        self.Bind(wx.lib.agw.floatspin.EVT_FLOATSPIN, self.on_evt_floatspin, self)
+        self.Bind(EVT_FLOATSPIN,
+                  self.on_evt_floatspin, self)
         self._textctrl.Bind(wx.EVT_TEXT, self.on_evt_text, self._textctrl)
 
         if read_only is True:
             self.Enable(False)
 
         # attribute_element.add_static_observer(self.backed_object_attr_value_changed)
-        backing_object.observe(attribute_name, self.backed_object_attr_value_changed)
-        # backing_object.observe("update", self.backed_object_attr_value_changed)
+        backing_object.observe(attribute_name,
+                               self.backed_object_attr_value_changed)
+        # backing_object.observe("update",
+        #                        self.backed_object_attr_value_changed)
 
         self.sent = False
         self.last_value_sent = None
@@ -368,7 +448,9 @@ class IntWidget(wx.lib.agw.floatspin.FloatSpin):
 
         """
         print("on_evt_floatspin called")
-        if self:  # PyDeadObject error avoidance (python is a proxy to C++ that should not be called if not there)
+        # PyDeadObject error avoidance
+        # (python is a proxy to C++ that should not be called if not there)
+        if self:
             val = int(event.GetEventObject().GetValue())
             print("Sending Val " + str(val))
             setattr(self.backing_object, self.attribute_name, val)
@@ -385,7 +467,9 @@ class IntWidget(wx.lib.agw.floatspin.FloatSpin):
 
         """
         print("on_evt_text called")
-        if self:  # PyDeadObject error avoidance (python is a proxy to C++ that should not be called if not there)
+        # PyDeadObject error avoidance
+        # (python is a proxy to C++ that should not be called if not there)
+        if self:
             if self.sent is False:
                 try:
                     f = int(event.GetEventObject().GetValue())
@@ -416,13 +500,15 @@ class IntWidget(wx.lib.agw.floatspin.FloatSpin):
         print("IntWidget : backed_object_attr_value_changed")
         print("IntWidget : backed_object_attr_value_change : %s" % str(change))
         print("IntWidget : %s" % str(self))
-        if self:  # PyDeadObject error avoidance (python is a proxy to C++ that should not be called if not there)
+        # PyDeadObject error avoidance
+        # (python is a proxy to C++ that should not be called if not there)
+        if self:
             # self.SetValue(change["value"])
             self.SetValue(getattr(change["object"], change["name"]))
         print(getattr(change["object"], change["name"]))
 
 
-class FloatWidget(wx.lib.agw.floatspin.FloatSpin):
+class FloatWidget(FloatSpin):
     r"""Float widget
 
     Parameters
@@ -431,8 +517,10 @@ class FloatWidget(wx.lib.agw.floatspin.FloatSpin):
     id : int
     backing_object : subclass of atom.api.Atom
         the atom object being dealt with
-    attribute_name : the name of the managed variable in the backing object definition
-        if backing object is defined as class BackingObject(Atom): var_1 = parametrics.electron.scalars.FloatRange(),
+    attribute_name : the name of the managed variable in the backing 
+        object definition
+        if backing object is defined as 
+        class BackingObject(Atom): var_1 = FloatRange(),
         the attribute name is var_1
     read_only : bool
 
@@ -440,29 +528,38 @@ class FloatWidget(wx.lib.agw.floatspin.FloatSpin):
     -------------
     `FloatSpin` catches 3 different types of events:
     1) Spin events: events generated by spinning up/down the spinbutton;
-    2) Char events: playing with up/down arrows of the keyboard increase/decrease
-    the value of :class:`FloatSpin`;
-    3) Mouse wheel event: using the wheel will change the value of :class:`FloatSpin`.
+    2) Char events: playing with up/down arrows of the keyboard 
+    increase/decrease the value of :class:`FloatSpin`;
+    3) Mouse wheel event: 
+    using the wheel will change the value of :class:`FloatSpin`.
     In addition, there are some other functionalities:
-    - It remembers the initial value as a default value, call meth:~FloatSpin.SetToDefaultValue`, or
+    - It remembers the initial value as a default value,
+    call meth:~FloatSpin.SetToDefaultValue`, or
     press ``Esc`` to return to it;
     - ``Shift`` + arrow = 2 * increment (or ``Shift`` + mouse wheel);
     - ``Ctrl`` + arrow = 10 * increment (or ``Ctrl`` + mouse wheel);
     - ``Alt`` + arrow = 100 * increment (or ``Alt`` + mouse wheel);
-    - Combinations of ``Shift``, ``Ctrl``, ``Alt`` increment the :class:`FloatSpin` value by the
-    product of the factors;
-    - ``PgUp`` & ``PgDn`` = 10 * increment * the product of the ``Shift``, ``Ctrl``, ``Alt``
-    factors;
+    - Combinations of ``Shift``, ``Ctrl``, ``Alt``
+    increment the :class:`FloatSpin` value by the product of the factors;
+    - ``PgUp`` & ``PgDn`` = 10 * increment * the product of the
+    ``Shift``, ``Ctrl``, ``Alt`` factors;
     - ``Space`` sets the control's value to it's last valid state.
+
     """
-    def __init__(self, parent, id, backing_object=None, attribute_name=None, read_only=False):
-        assert isinstance(backing_object, atom.api.Atom)
+    def __init__(self,
+                 parent,
+                 id,
+                 backing_object=None,
+                 attribute_name=None,
+                 read_only=False):
+        assert isinstance(backing_object, Atom)
         attribute_element = backing_object.__class__.__dict__["__atom_members__"][attribute_name]
-        assert isinstance(attribute_element, gluon.scalars.FloatRange) or isinstance(attribute_element,
-                                                                                     gluon.scalars.Float)
+        assert (isinstance(attribute_element, FloatRange) or
+                isinstance(attribute_element, Float))
         self.backing_object = backing_object
         self.attribute_name = attribute_name
-        # Increment is dynamically handled in the control, 0.01 is only a starting value
+        # Increment is dynamically handled in the control,
+        # 0.01 is only a starting value
         if hasattr(attribute_element, "low"):
             minimum = attribute_element.low
         else:
@@ -471,25 +568,28 @@ class FloatWidget(wx.lib.agw.floatspin.FloatSpin):
             maximum = attribute_element.high
         else:
             maximum = None
-        wx.lib.agw.floatspin.FloatSpin.__init__(self, parent, id,
-                                                min_val=minimum,
-                                                max_val=maximum,
-                                                increment=self.get_increment(self.get_digits(
-                                                     getattr(backing_object, attribute_name))),
-                                                value=getattr(backing_object, attribute_name),
-                                                agwStyle=wx.lib.agw.floatspin.FS_RIGHT)
+        FloatSpin.__init__(self,
+                           parent,
+                           id,
+                           min_val=minimum,
+                           max_val=maximum,
+                           increment=self.get_increment(self.get_digits(getattr(backing_object, attribute_name))),
+                           value=getattr(backing_object, attribute_name),
+                           agwStyle=FS_RIGHT)
         # self.SetFormat("%f")
         self.SetDigits(self.get_digits(getattr(backing_object, attribute_name)))
         # self.Bind(wx.EVT_TEXT, self.on_evt_floatspin, self)
-        self.Bind(wx.lib.agw.floatspin.EVT_FLOATSPIN, self.on_evt_floatspin, self)
+        self.Bind(EVT_FLOATSPIN, self.on_evt_floatspin, self)
         self._textctrl.Bind(wx.EVT_TEXT, self.on_evt_text, self._textctrl)
 
         if read_only is True:
             self.Enable(False)
 
         # attribute_element.add_static_observer(self.backed_object_attr_value_changed)
-        backing_object.observe(attribute_name, self.backed_object_attr_value_changed)
-        # backing_object.observe("update", self.backed_object_attr_value_changed)
+        backing_object.observe(attribute_name,
+                               self.backed_object_attr_value_changed)
+        # backing_object.observe("update",
+        #                        self.backed_object_attr_value_changed)
 
         self.sent = False
         self.last_value_sent = None
@@ -533,7 +633,9 @@ class FloatWidget(wx.lib.agw.floatspin.FloatSpin):
         event : wx event
 
         """
-        if self:  # PyDeadObject error avoidance (python is a proxy to C++ that should not be called if not there)
+        # PyDeadObject error avoidance
+        # (python is a proxy to C++ that should not be called if not there)
+        if self:
             self.sent = False
             if -1e-10 < event.GetEventObject().GetValue() < 1e-10:
                 val = 0.
@@ -557,7 +659,9 @@ class FloatWidget(wx.lib.agw.floatspin.FloatSpin):
         event : wx event
 
         """
-        if self:  # PyDeadObject error avoidance (python is a proxy to C++ that should not be called if not there)
+        # PyDeadObject error avoidance
+        # (python is a proxy to C++ that should not be called if not there)
+        if self:
             if self.sent is False:
                 try:
                     f = float(event.GetEventObject().GetValue())
@@ -585,15 +689,21 @@ class FloatWidget(wx.lib.agw.floatspin.FloatSpin):
 
         """
         print("FloatWidget : backed_object_attr_value_changed")
-        print("FloatWidget : backed_object_attr_value_change : %s" % str(change))
-        if self:  # PyDeadObject error avoidance (python is a proxy to C++ that should not be called if not there)
+        print("FloatWidget : backed_object_attr_value_change : %s" %
+              str(change))
+        # PyDeadObject error avoidance
+        # (python is a proxy to C++ that should not be called if not there)
+        if self:
             # self.SetValue(change["value"])
             self.SetValue(getattr(change["object"], change["name"]))
         print(getattr(change["object"], change["name"]))
 
         # print("FloatWidget : backed_object_attr_value_changed")
-        # print("FloatWidget : backed_object_attr_value_change : %s" % str(change))
-        # if self:  # PyDeadObject error avoidance (python is a proxy to C++ that should not be called if not there)
+        # print("FloatWidget : backed_object_attr_value_change : %s" %
+        #       str(change))
+        # # PyDeadObject error avoidance
+        # # (python is a proxy to C++ that should not be called if not there)
+        # if self:
         #     try:
         #         if change["name"] == self.attribute_name:
         #             self.SetValue(change["value"])

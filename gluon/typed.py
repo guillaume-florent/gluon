@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # coding: utf-8
 
 r"""gluon's equivalent to Atom's Instance"""
@@ -18,22 +17,3 @@ class Typed(Element, atom.typed.Typed):
         #     except KeyError:
         #         self.read_only = []
         self.read_only = read_only
-
-
-if __name__ == "__main__":
-    import atom.api
-
-    class DummyParent(object):
-        pass
-
-    class Dummy(DummyParent):
-        pass
-
-    class A(atom.api.Atom):
-        ins = Typed(kind=DummyParent, args=())
-
-    a = A()
-    print(a.ins)
-    a.ins = Dummy()
-    print(a.ins)
-

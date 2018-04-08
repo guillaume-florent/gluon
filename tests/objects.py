@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # coding: utf-8
 
 r"""objects used in the examples, to avoid duplication in each example"""

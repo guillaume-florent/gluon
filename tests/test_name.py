@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # coding: utf-8
 
 r"""name.py module tests"""
@@ -14,7 +14,8 @@ def test_label():
     name = gluon.ui.name.label("item_#1")
     assert name == "Item #1"
 
-    # The following cases are very unlikely (python variable naming restrictions)
+    # The following cases are very unlikely
+    # (python variable naming restrictions)
     name = gluon.ui.name.label("101test")
     assert name == "101Test"
 

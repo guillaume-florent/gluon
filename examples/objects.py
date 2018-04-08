@@ -1,14 +1,13 @@
-#!/usr/bin/python
 # coding: utf-8
 
 r"""objects used in the examples, to avoid duplication in each example"""
 
-import atom.api
-import gluon.scalars
-import gluon.typed
-import gluon.instance
-import gluon.enum
-import gluon.ui.wx_
+from atom.api import Atom, observe
+from gluon.scalars import Float, FloatRange, Bool, Str, Value, Int
+from gluon.typed import Typed
+# import gluon.instance
+from gluon.enum import Enum
+# import gluon.ui.wx_
 
 
 class Dummy(object):
@@ -16,43 +15,48 @@ class Dummy(object):
     pass
 
 
-class DummyButAtomic(atom.api.Atom):
+class DummyButAtomic(Atom):
     r"""A dummy class that inherits Atom and has a 3 members"""
-    a = gluon.scalars.Float(default=11.)
-    b = gluon.scalars.Float(default=22.)
-    c = gluon.scalars.Float(default=33.)
+    a = Float(default=11.)
+    b = Float(default=22.)
+    c = Float(default=33.)
 
 
-class Example(atom.api.Atom):
+class Example(Atom):
     r"""The Example class that is used to generated the UI
 
     It inherits Atom to create the members and for the built-in observer pattern
 
     """
-    float_element = gluon.scalars.Float(default=-22.)
-    float_range_element_1 = gluon.scalars.FloatRange(low=2., high=10., value=8.)
-    float_range_element_2 = gluon.scalars.FloatRange(low=2., high=13., value=3.)
+    float_element = Float(default=-22.)
+    float_range_element_1 = FloatRange(low=2., high=10., value=8.)
+    float_range_element_2 = FloatRange(low=2., high=13., value=3.)
 
-    bool_element = gluon.scalars.Bool(default=False)
+    bool_element = Bool(default=False)
 
-    str_element = gluon.scalars.Str(default="hi there")
+    str_element = Str(default="hi there")
 
-    value_element = gluon.scalars.Value(default=Dummy())
+    value_element = Value(default=Dummy())
 
-    # value_element_atomic = gluon.scalars.Value(default=DummyButAtomic())
-    # value_element_atomic_2 = gluon.scalars.Value(default=DummyButAtomic())
-    typed_element_atomic = gluon.typed.Typed(DummyButAtomic, args=(), kwargs={"a": 1, "b": 2, "c": 3}, read_only=["c"])
-    typed_element_atomic_2 = gluon.typed.Typed(DummyButAtomic, args=(), kwargs={"a": 4, "b": 5, "c": 6})
+    # value_element_atomic = Value(default=DummyButAtomic())
+    # value_element_atomic_2 = Value(default=DummyButAtomic())
+    typed_element_atomic = Typed(DummyButAtomic,
+                                             args=(),
+                                             kwargs={"a": 1, "b": 2, "c": 3},
+                                             read_only=["c"])
+    typed_element_atomic_2 = Typed(DummyButAtomic,
+                                               args=(),
+                                               kwargs={"a": 4, "b": 5, "c": 6})
 
-    _value_element_protected = gluon.scalars.Value(default=Dummy())
+    _value_element_protected = Value(default=Dummy())
 
     # This should never happen a Member's intent is not to be private
-    # __private = gluon.scalars.Value(name="private value", default=Dummy())
+    # __private = Value(name="private value", default=Dummy())
 
-    int_element = gluon.scalars.Int(default=3)
-    # c = gluon.scalars.Float(name="c is a free float", default=-22.)
+    int_element = Int(default=3)
+    # c = Float(name="c is a free float", default=-22.)
 
-    enum_element = gluon.enum.Enum("a", "b", "c")
+    enum_element = Enum("a", "b", "c")
 
     var_normal = 44.
     _var_protected = 44.
@@ -63,7 +67,7 @@ class Example(atom.api.Atom):
         # self.value_element_atomic = DummyButAtomic()
         # self.value_element_atomic_2 = DummyButAtomic()
 
-    @atom.api.observe("float_element", "float_range_element_1")
+    @observe("float_element", "float_range_element_1")
     def someone_changed_it(self, change):
         r"""Callback for some members modifications"""
         print("someone changed float_element or float_range_element_1")
