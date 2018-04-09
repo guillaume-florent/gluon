@@ -1,0 +1,16 @@
+sudo: required
+
+git:
+  depth: 3
+
+services:
+  - docker
+
+install:
+  - docker build --tag guillaume-florent/gluon:latest .
+
+script:
+  - docker run --name gluon guillaume-florent/gluon:latest /bin/bash -c "cd /opt/gluon;pytest tests/"
+
+after_script:
+  - docker images
