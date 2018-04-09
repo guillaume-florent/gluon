@@ -8,6 +8,18 @@ gluon
 .. image:: https://api.codacy.com/project/badge/Grade/7c3f965fed4742dbb9dc80b7cc55b7a9
     :target: https://www.codacy.com/app/guillaume-florent/gluon?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=guillaume-florent/gluon&amp;utm_campaign=Badge_Grade
 
+.. image:: https://anaconda.org/gflorent/gluon/badges/version.svg
+    :target: https://anaconda.org/gflorent/gluon
+
+.. image:: https://anaconda.org/gflorent/gluon/badges/latest_release_date.svg
+    :target: https://anaconda.org/gflorent/gluon
+
+.. image:: https://anaconda.org/gflorent/gluon/badges/platforms.svg
+    :target: https://anaconda.org/gflorent/gluon
+
+.. image:: https://anaconda.org/gflorent/gluon/badges/downloads.svg
+    :target: https://anaconda.org/gflorent/gluon
+
 
 Python UI auto generation framework based on `atom <https://github.com/nucleic/atom>`_
 

@@ -1,0 +1,36 @@
+package:
+  name: gluon
+  version: "0.8.0"
+
+source:
+  path: ../gluon
+
+build:
+  number: 0
+  noarch: python
+  script: python setup.py install --single-version-externally-managed --record record.txt
+  include_recipe: True
+
+requirements:
+  build:
+    - python
+    - setuptools
+
+  run:
+    - python
+    - atom
+    - wxpython
+
+test:
+  requires:
+    - pytest
+  source_files:
+    - tests
+  commands:
+    - pytest tests/
+
+about:
+  home: https://github.com/guillaume-florent/gluon
+  license: GPLv3
+  license_file: LICENSE.txt
+  summary: UI autogeneration from Atom objects
