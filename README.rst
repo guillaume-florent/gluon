@@ -1,5 +1,9 @@
+*****
 gluon
-=====
+*****
+
+.. image:: https://travis-ci.org/guillaume-florent/gluon.svg?branch=master
+    :target: https://travis-ci.org/guillaume-florent/gluon
 
 .. image:: https://api.codacy.com/project/badge/Grade/7c3f965fed4742dbb9dc80b7cc55b7a9
     :target: https://www.codacy.com/app/guillaume-florent/gluon?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=guillaume-florent/gluon&amp;utm_campaign=Badge_Grade
