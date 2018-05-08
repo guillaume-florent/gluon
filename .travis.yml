@@ -7,10 +7,12 @@ services:
   - docker
 
 install:
-  - docker build --tag guillaume-florent/gluon:latest .
+  - docker build --file Dockerfile.py3 --tag guillaume-florent/gluon-py3:latest .
+  - docker build --file Dockerfile.py2 --tag guillaume-florent/gluon-py2:latest .
 
 script:
-  - docker run --name gluon guillaume-florent/gluon:latest /bin/bash -c "cd /opt/gluon;pytest tests/"
+  - docker run guillaume-florent/gluon-py3:latest /bin/bash -c "cd /opt/gluon;pytest tests/"
+  - docker run guillaume-florent/gluon-py2:latest /bin/bash -c "cd /opt/gluon;pytest tests/"
 
 after_script:
   - docker images

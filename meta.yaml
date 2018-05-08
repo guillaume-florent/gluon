@@ -6,9 +6,9 @@ source:
   path: ../gluon
 
 build:
-  number: 0
+  number: 1
   noarch: python
-  script: python setup.py install --single-version-externally-managed --record record.txt
+  script: python setup.py install
   include_recipe: True
 
 requirements:
